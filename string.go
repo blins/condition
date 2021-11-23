@@ -10,7 +10,7 @@ import "fmt"
 	condition.RegisterConditionFabric("suffix", condition.StringCheckerFabric(strings.HasSuffix))
 */
 type StringChecker struct {
-	handler func(string, string) bool
+	Handler func(string, string) bool
 	value   string
 }
 
@@ -25,15 +25,15 @@ func (cond *StringChecker) ParseArgs(args []string) ([]string, error) {
 func (cond *StringChecker) Check(value interface{}) bool {
 	switch v := value.(type) {
 	case string:
-		return cond.handler(v, cond.value)
+		return cond.Handler(v, cond.value)
 	case fmt.Stringer:
-		return cond.handler(v.String(), cond.value)
+		return cond.Handler(v.String(), cond.value)
 	}
 	return false
 }
 
 func StringCheckerFabric(handler func(string, string) bool) Fabric {
 	return FabricFunc(func() Condition {
-		return &StringChecker{handler: handler}
+		return &StringChecker{Handler: handler}
 	})
 }
